@@ -13,8 +13,11 @@ module OvirtProvisionPlugin
     def engine_callback
         logger.debug "hey im on engine_callback"
         if host_ready? && provisioned_recently? && ovirt_host?
-            exec_cmd("echo 'I am here'")
-            # call ovirt
+            # get ovirt user and password
+            cr = ComputeResource.find_by_name('ovirt-engine')
+            login = "#{cr.user}:#{cr.password}"
+            host_id = parameters.find_by_name("host_ovirt_id").value
+            exec_cmd("curl -X POST -H 'Content-type: application/xml' -u #{login} #{cr.url}/hosts/#{host_id}/approve -d <action></action>'")
         end
     end
 
@@ -28,7 +31,8 @@ module OvirtProvisionPlugin
     end
 
     def ovirt_host?
-	return true
+        # how would i know that? parameter?
+	      return parameters.find_by_name("host_ovirt_id").blank?
     end
 
     def exec_cmd(cmd)
