@@ -3,17 +3,17 @@ module OvirtProvisionPlugin
     extend ActiveSupport::Concern
 
     included do
-      # execute callbacks
       after_save :engine_callback
     end
 
-    # create or overwrite instance methods...
     def engine_callback
         if host_ready? && provisioned_recently? && ovirt_host?
             cr = ComputeResource.find_by_name('ovirt-engine')
             host_id = parameters.find_by_name("host_ovirt_id").value
-            logger.debug "Host #{host_id} as been provisioned. Sending approve request to #{cr.url}"
+            logger.debug "OvirtProvisionPlugin:: Host #{host_id} as been provisioned. Sending approve request to #{cr.url}"
             client = OVIRT::Client.new('#{cr.user}', '#{cr.password}', '#{cr.url}')
+
+            # approve uses pk
             client.approve_host("#{host_id}")
         end
     end
@@ -24,8 +24,7 @@ module OvirtProvisionPlugin
     end
 
     def provisioned_recently?
-        # TODO: remove comment.
-        # last_report_was.blank? && last_report.blank?
+        last_report_was.blank? && last_report.blank?
         return true
     end
 
