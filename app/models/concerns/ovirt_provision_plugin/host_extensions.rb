@@ -25,7 +25,6 @@ module OvirtProvisionPlugin
 
     def provisioned_recently?
         last_report_was.blank? && last_report.blank?
-        return true
     end
 
     def ovirt_host?
