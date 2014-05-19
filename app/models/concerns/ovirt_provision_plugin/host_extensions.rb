@@ -8,14 +8,30 @@ module OvirtProvisionPlugin
 
     def engine_callback
         if host_ready? && provisioned_recently? && ovirt_host?
-            cr = ComputeResource.find_by_name('ovirt-engine')
+            cr = ComputeResource.find_by_name("ovirt-engine")
             host_id = parameters.find_by_name("host_ovirt_id").value
             logger.debug "OvirtProvisionPlugin:: Host #{host_id} as been provisioned. Sending approve request to #{cr.url}"
-            client = OVIRT::Client.new('#{cr.user}', '#{cr.password}', '#{cr.url}')
+            client = OVIRT::Client.new("#{cr.user}", "#{cr.password}", "#{cr.url}")
 
-            # approve uses pk
+            logger.debug "OvirtProvisionPlugin:: Sending approve "
             client.approve_host("#{host_id}")
         end
+    end
+
+    def reinstall_host
+        cr = ComputeResource.find_by_name("ovirt-engine")
+        host_id = parameters.find_by_name("host_ovirt_id").value
+        client = OVIRT::Client.new("#{cr.user}", "#{cr.password}", "#{cr.url}")
+        logger.debug "OvirtProvisionPlugin:: Sending approve "
+        client.reinstall_host("#{host_id}")
+    end
+
+    def approve_host
+        cr = ComputeResource.find_by_name("ovirt-engine")
+        host_id = parameters.find_by_name("host_ovirt_id").value
+        client = OVIRT::Client.new("#{cr.user}", "#{cr.password}", "#{cr.url}")
+        logger.debug "sending approve"
+        client.approve_host("#{host_id}")
     end
 
     def host_ready?

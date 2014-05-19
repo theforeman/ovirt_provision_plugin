@@ -28,7 +28,7 @@ module OvirtProvisionPlugin
         #add menu entry
         menu :top_menu, :template,
              :url_hash => {:controller => :'ovirt_provision_plugin/hosts', :action => :ovirt_hosts },
-             :caption  => 'Ovirt Provision',
+             :caption  => 'oVirt Hosts',
              :parent   => :hosts_menu,
              :after    => :hosts
       end
