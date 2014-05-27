@@ -38,6 +38,7 @@ module OvirtProvisionPlugin
     config.to_prepare do
       begin
         Host::Managed.send(:include, OvirtProvisionPlugin::HostExtensions)
+        Report.send(:include, OvirtProvisionPlugin::ReportExtensions)
         HostsHelper.send(:include, OvirtProvisionPlugin::HostsHelperExtensions)
       rescue => e
         puts "OvirtProvisionPlugin: skipping engine hook (#{e.to_s})"

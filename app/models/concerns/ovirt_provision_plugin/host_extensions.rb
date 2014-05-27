@@ -2,10 +2,6 @@ module OvirtProvisionPlugin
   module HostExtensions
     extend ActiveSupport::Concern
 
-    included do
-        before_provision :ovirt_host_callback
-    end
-
     def get_ovirt_client
         begin
             cr = ComputeResource.find_by_id(parameters.find_by_name("compute_resource_id").value)
