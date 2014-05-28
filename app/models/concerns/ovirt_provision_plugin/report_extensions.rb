@@ -8,7 +8,7 @@ module OvirtProvisionPlugin
 
     def new_report_callback
       host = Host.find(host_id)
-      if host.reports.count == 1
+      if host.reports.count == 2
         host.ovirt_host_callback
       end
     end
