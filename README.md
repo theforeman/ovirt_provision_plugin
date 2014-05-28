@@ -1,6 +1,6 @@
 # OvirtProvisionPlugin
 
-This plugin monitors oVirt provision for new host and perform related API calls to ovirt-engine.
+This plugin monitors oVirt provision for new host and perform related API calls to oVirt Engine
 
 ## Installation
 
@@ -9,7 +9,7 @@ for how to install Foreman plugins
 
 ## Usage
 
-Will be added later
+Adding the plugin will add registration flow to oVirt automatically to provision host flow
 
 ## Contributing
 

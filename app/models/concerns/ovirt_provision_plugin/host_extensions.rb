@@ -4,8 +4,7 @@ module OvirtProvisionPlugin
 
     def ovirt_host_callback
       logger.debug "OvirtProvisionPlugin:: Running provision callback.."
-      # TODO: check if host_ready? relevant to this condition
-      if self.ovirt_host? && self.status_installing? && (not self.is_ovirt_node?)
+      if self.ovirt_host? && self.status_installing? && (not self.is_ovirt_node?) && self.ovirt_ready?
         logger.debug "OvirtProvisionPlugin:: Running ovirt_host_callback on \"#{self.get_ovirt_host_name}\""
         host_id = self.get_ovirt_host_id
         client = self.get_ovirt_client
