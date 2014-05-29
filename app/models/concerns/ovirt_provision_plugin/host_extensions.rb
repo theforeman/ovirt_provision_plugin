@@ -4,7 +4,7 @@ module OvirtProvisionPlugin
 
     def ovirt_host_callback
       logger.debug "OvirtProvisionPlugin:: Running provision callback.."
-      if self.ovirt_host? && self.status_installing? && (not self.is_ovirt_node?) && self.ovirt_ready?
+      if self.ovirt_host? && self.status_installing? && (not self.is_ovirt_node?) && (not self.error?)
         logger.debug "OvirtProvisionPlugin:: Running ovirt_host_callback on \"#{self.get_ovirt_host_name}\""
         host_id = self.get_ovirt_host_id
         client = self.get_ovirt_client
@@ -16,15 +16,6 @@ module OvirtProvisionPlugin
       is_ovirt_node = self.operatingsystem.name == "oVirt-Node" or self.operatingsystem.name == "RHEV-H"
       if is_ovirt_node
         logger.debug "OvirtProvisionPlugin:: Provisioned ovirt node host"
-        return true
-      end
-      return false
-    end
-
-    def host_ready?
-      fail(Foreman::Exception, "Latest Puppet Run Contains Failures for Host: #{id}") if failed > 0
-      if self.skipped == 0 && self.pending == 0
-        logger.debug "OvirtProvisionPlugin:: host ready"
         return true
       end
       return false
