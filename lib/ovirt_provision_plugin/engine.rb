@@ -24,13 +24,6 @@ module OvirtProvisionPlugin
 
         # Add a new role called 'Discovery' if it doesn't exist
         role "OvirtProvisionPlugin", [:view_ovirt_provision_plugin]
-
-        #add menu entry
-        menu :top_menu, :template,
-             :url_hash => {:controller => :'ovirt_provision_plugin/hosts', :action => :ovirt_hosts },
-             :caption  => 'oVirt Hosts',
-             :parent   => :hosts_menu,
-             :after    => :hosts
       end
     end
 
