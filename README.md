@@ -1,6 +1,14 @@
 # OvirtProvisionPlugin
 
-This plugin monitors oVirt provision for new host and perform related API calls to oVirt Engine
+This plugin monitors oVirt provision for new host and perform related API calls to oVirt Engine.
+
+# How does it work
+
+oVirt 3.5 allows to add foreman hosts to oVirt-engine by its user interface. This plugin helps to manage
+new discovered host (which are recognized by foreman_discovery plugin).
+When user adds new host from the discovered host, the host joins to oVirt cluster and get installed.
+When the OS installation part ends, OvirtProvisionPlugin sends API call to ovirt-engine to deploy the host, which
+means to install all that needed to provide vms manipulation on host (called deployed host).
 
 ## Installation
 
@@ -9,7 +17,7 @@ for how to install Foreman plugins
 
 ## Usage
 
-Adding the plugin will add registration flow to oVirt automatically to provision host flow
+Adding the plugin to foreman gem will add automatically to the provision host flow the registration to oVirt cluster.
 
 ## Contributing
 
