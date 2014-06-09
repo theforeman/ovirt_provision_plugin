@@ -45,6 +45,9 @@ module OvirtProvisionPlugin
         rescue OVIRT::OvirtException
             logger.debug "OvirtProvisionPlugin:: compute resource id was not found"
             return false
+        rescue NoMethodError
+            logger.debug "OvirtProvisionPlugin:: fail to read compute_recource_id on host #{self.name}"
+            return false
         else
             logger.debug "OvirtProvisionPlugin:: error occured during get_ovirt_client"
             return false
@@ -75,6 +78,9 @@ module OvirtProvisionPlugin
             return self.parameters.find_by_name("host_ovirt_id").value
         rescue OVIRT::OvirtException
             logger.debug "OvirtProvisionPlugin:: host ovirt id was not found"
+            return false
+        rescue NoMethodError
+            logger.debug "OvirtProvisionPlugin:: fail to read host_ovirt_id on host #{self.name}"
             return false
         else
             logger.debug "OvirtProvisionPlugin:: error occured during get_ovirt_host_id"
