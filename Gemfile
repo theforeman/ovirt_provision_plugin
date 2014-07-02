@@ -1,5 +1,5 @@
 source "http://rubygems.org"
 
-gem 'rbovirt', :git => 'https://github.com/bronhaim/rbovirt.git'
+gem 'rbovirt', '>= 0.0.27'
 
 gemspec

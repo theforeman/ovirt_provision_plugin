@@ -31,7 +31,7 @@ module OvirtProvisionPlugin
 
     def status_installing?
       h = self.get_ovirt_host
-      if h && h.status.strip == "installing_os"
+      if h != "" && h.status.strip == "installing_os"
         logger.debug "OvirtProvisionPlugin:: host in status installing"
         return true
       end
@@ -40,13 +40,14 @@ module OvirtProvisionPlugin
 
     def get_ovirt_client
         begin
-            cr = ComputeResource.find_by_id(parameters.find_by_name("compute_resource_id").value)
+            cr_id = parameters.find_by_name("compute_resource_id").value
+            cr = ComputeResource.find_by_id(cr_id)
             return OVIRT::Client.new("#{cr.user}", "#{cr.password}", "#{cr.url}")
         rescue OVIRT::OvirtException
             logger.debug "OvirtProvisionPlugin:: compute resource id was not found"
             return false
         rescue NoMethodError
-            logger.debug "OvirtProvisionPlugin:: fail to read compute_recource_id on host #{self.name}"
+            logger.debug "OvirtProvisionPlugin:: fail to read compute_rescource_id on host #{self.name}, id #{cr_id}"
             return false
         else
             logger.debug "OvirtProvisionPlugin:: error occured during get_ovirt_client"

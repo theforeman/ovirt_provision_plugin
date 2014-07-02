@@ -1,23 +1,27 @@
-# OvirtProvisionPlugin
+# ovirt_provision_plugin
 
-This plugin monitors oVirt provision for new host and perform related API calls to oVirt Engine.
+Ovirt provision plugin sends API request to oVirt management to reinstall host id after discovered hosts are first provisioned
+by oVirt engine (Using foreman provider integration).
 
 # How does it work
 
-oVirt 3.5 allows to add foreman hosts to oVirt-engine by its user interface. This plugin helps to manage
+oVirt 3.5 allows to add foreman hosts provider to oVirt engine. This plugin is required to manage
 new discovered host (which are recognized by foreman_discovery plugin).
-When user adds new host from the discovered host, the host joins to oVirt cluster and get installed.
-When the OS installation part ends, OvirtProvisionPlugin sends API call to ovirt-engine to deploy the host, which
-means to install all that needed to provide vms manipulation on host (called deployed host).
+When user adds new host from the discovered host by ovirt, the host is joined to cluster and foreman starts to provision
+it regarding to the choosen host group configuration.
+When the OS installation part ends, ovirt_provision_plugin recognizes it and sends API call to
+ovirt-engine to reinstall the host id.
 
 ## Installation
 
-See [How_to_Install_a_Plugin](http://projects.theforeman.org/projects/foreman/wiki/How_to_Install_a_Plugin)
-for how to install Foreman plugins
+yum install ruby193-rubygem-ovirt_provision_plugin
 
-## Usage
+[TODO: remove this section when plugin gets to official repo]
+Currently you can use:
+http://yum.theforeman.org/plugins/nightly/el6/x86_64/ruby193-rubygem-ovirt_provision_plugin-0.0.1-1.el6.noarch.rpm
 
-Adding the plugin to foreman gem will add automatically to the provision host flow the registration to oVirt cluster.
+The plugin requires also rbovirt updates, which can be found in:
+http://yum.theforeman.org/nightly/el6/x86_64/ruby193-rubygem-rbovirt-0.0.28-1.el6.noarch.rpm
 
 ## Contributing
 
