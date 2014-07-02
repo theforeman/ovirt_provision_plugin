@@ -6,9 +6,9 @@ Gem::Specification.new do |s|
   s.date        = Date.today.to_s
   s.authors     = ["Yaniv Bronhaim"]
   s.email       = ["ybronhei@redhat.com"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/theforeman/ovirt_provision_plugin"
   s.summary     = "This plugin monitors oVirt provision for new host and perform related API calls to ovirt-engine."
-  s.description = ""
+  s.description = "Ovirt provision plugin sends API request to oVirt management to reinstall host id after discovered hosts are first provisioned by oVirt engine (Using foreman provider integration)."
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
