@@ -4,11 +4,29 @@ module OvirtProvisionPlugin
 
     def ovirt_host_callback
       logger.debug "OvirtProvisionPlugin:: Running provision callback.."
-      if self.ovirt_host? && self.status_installing? && (not self.is_ovirt_node?) && (not self.error?)
-        logger.debug "OvirtProvisionPlugin:: Running ovirt_host_callback on \"#{self.get_ovirt_host_name}\""
-        host_id = self.get_ovirt_host_id
-        client = self.get_ovirt_client
-        client.reinstall_host("#{host_id}")
+      max_tries = 10;
+      if self.is_ovirt_node?
+        logger.debug "OvirtProvisionPlugin:: Node provisioning is done."
+      else
+        while max_tries > 0 && self.ovirt_host? && self.status_installing?
+          if (self.error?)
+            logger.debug "OvirtProvisionPlugin:: Failed to run classes. Trying again (#{max_tries})"
+            puppetrun!
+            max_tries = max_tries - 1
+          else
+            begin
+              logger.debug "OvirtProvisionPlugin:: Running ovirt_host_callback on \"#{self.get_ovirt_host_name}\""
+              host_id = self.get_ovirt_host_id
+              client = self.get_ovirt_client
+              client.reinstall_host("#{host_id}")
+              logger.debug "OvirtProvisionPlugin:: Sent reinstall command successfully"
+            rescue OVIRT::OvirtException
+              logger.debug "OvirtProvisionPlugin:: Failed to reinstall host. Trying again (#{max_tries})"
+              puppetrun!
+              max_tries = max_tries - 1
+            end
+          end
+        end
       end
     end
 
