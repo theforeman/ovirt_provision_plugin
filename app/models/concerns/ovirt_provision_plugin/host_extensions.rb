@@ -60,7 +60,12 @@ module OvirtProvisionPlugin
         begin
             cr_id = parameters.find_by_name("compute_resource_id").value
             cr = ComputeResource.find_by_id(cr_id)
-            return OVIRT::Client.new("#{cr.user}", "#{cr.password}", "#{cr.url}")
+            connection_opts = {}
+            if not cr.public_key.blank?
+                connection_opts[:datacenter_id] = cr.uuid
+                connection_opts[:ca_cert_store] = OpenSSL::X509::Store.new.add_cert(OpenSSL::X509::Certificate.new(cr.public_key))
+            end
+            return OVIRT::Client.new("#{cr.user}", "#{cr.password}", "#{cr.url}", connection_opts)
         rescue OVIRT::OvirtException
             logger.error "OvirtProvisionPlugin:: compute resource id was not found"
             return false
