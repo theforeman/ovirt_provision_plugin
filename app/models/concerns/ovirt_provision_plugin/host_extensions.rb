@@ -57,54 +57,59 @@ module OvirtProvisionPlugin
     end
 
     def get_ovirt_client
-        begin
-            cr_id = parameters.find_by_name("compute_resource_id").value
-            cr = ComputeResource.find_by_id(cr_id)
-            return OVIRT::Client.new("#{cr.user}", "#{cr.password}", "#{cr.url}")
-        rescue OVIRT::OvirtException
-            logger.error "OvirtProvisionPlugin:: compute resource id was not found"
-            return false
-        rescue NoMethodError
-            logger.error "OvirtProvisionPlugin:: fail to read compute_rescource_id on host #{self.name}, id #{cr_id}"
-            return false
-        else
-            logger.error "OvirtProvisionPlugin:: error occured during get_ovirt_client"
-            return false
+      begin
+        cr_id = parameters.find_by_name("compute_resource_id").value
+        cr = ComputeResource.find_by_id(cr_id)
+        connection_opts = {}
+        if not cr.public_key.blank?
+          connection_opts[:datacenter_id] = cr.uuid
+          connection_opts[:ca_cert_store] = OpenSSL::X509::Store.new.add_cert(OpenSSL::X509::Certificate.new(cr.public_key))
         end
+        return OVIRT::Client.new("#{cr.user}", "#{cr.password}", "#{cr.url}", connection_opts)
+      rescue OVIRT::OvirtException
+        logger.error "OvirtProvisionPlugin:: compute resource id was not found"
+        return false
+      rescue NoMethodError
+        logger.error "OvirtProvisionPlugin:: fail to read compute_rescource_id on host #{self.name}, id #{cr_id}"
+        return false
+      else
+        logger.error "OvirtProvisionPlugin:: error occured during get_ovirt_client"
+        return false
+      end
     end
 
     def get_ovirt_host
-        client = self.get_ovirt_client
-        if not client
-            logger.error "OvirtProvisionPlugin:: couldn't get ovirt_host"
-            return ""
-        else
-            return client.host(get_ovirt_host_id)
-        end
+      client = self.get_ovirt_client
+      if not client
+        logger.error "OvirtProvisionPlugin:: couldn't get ovirt_host"
+        return ""
+      else
+        return client.host(get_ovirt_host_id)
+      end
     end
 
     def get_ovirt_host_name
-        h = self.get_ovirt_host
-        if not h
-            return ""
-        else
-            return h.name
-        end
+      h = self.get_ovirt_host
+      if not h
+        return ""
+      else
+        return h.name
+      end
     end
 
     def get_ovirt_host_id
-        begin
-            return self.parameters.find_by_name("host_ovirt_id").value
-        rescue OVIRT::OvirtException
-            logger.error "OvirtProvisionPlugin:: host ovirt id was not found"
-            return false
-        rescue NoMethodError
-            logger.error "OvirtProvisionPlugin:: fail to read host_ovirt_id on host #{self.name}"
-            return false
-        else
-            logger.error "OvirtProvisionPlugin:: error occured during get_ovirt_host_id"
-            return false
-        end
+      begin
+        return self.parameters.find_by_name("host_ovirt_id").value
+      rescue OVIRT::OvirtException
+        logger.error "OvirtProvisionPlugin:: host ovirt id was not found"
+        return false
+      rescue NoMethodError
+        logger.error "OvirtProvisionPlugin:: fail to read host_ovirt_id on host #{self.name}"
+        return false
+      else
+        logger.error "OvirtProvisionPlugin:: error occured during get_ovirt_host_id"
+        return false
+      end
     end
   end
 end
