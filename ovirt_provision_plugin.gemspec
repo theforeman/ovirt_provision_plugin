@@ -14,5 +14,5 @@ Gem::Specification.new do |s|
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency "deface"
-  s.add_dependency "rbovirt", ">= 0.0.27"
+  s.add_dependency "rbovirt", ">= 0.1.0"
 end
