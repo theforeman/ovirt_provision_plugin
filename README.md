@@ -14,14 +14,27 @@ ovirt-engine to reinstall the host id.
 
 ## Installation
 
-yum install ruby193-rubygem-ovirt_provision_plugin
+### Red Hat, CentOS, Fedora, Scientific Linux (rpm)
 
-[TODO: remove this section when plugin gets to official repo]
-Currently you can use:
-http://yum.theforeman.org/plugins/nightly/el6/x86_64/ruby193-rubygem-ovirt_provision_plugin-0.0.1-1.el6.noarch.rpm
+* [Foreman: How to Install a Plugin](http://theforeman.org/manuals/latest/index.html#6.1InstallaPlugin)
 
-The plugin requires also rbovirt updates, which can be found in:
-http://yum.theforeman.org/nightly/el6/x86_64/ruby193-rubygem-rbovirt-0.0.28-1.el6.noarch.rpm
+Set up the repo as explained in the link above, then run
+
+    # yum install ruby193-rubygem-ovirt_provision_plugin
+
+### Bundle (gem)
+
+Add the following to bundler.d/Gemfile.local.rb in your Foreman installation directory (/usr/share/foreman by default)
+
+    $ gem 'ovirt_provision_plugin'
+
+Then run `bundle install` and from the same directory.
+
+## Compatibility
+
+| Foreman | Plugin |
+| ---------------:| --------------:|
+| >= 1.6         | 1.0.0 - 1.0.1 |
 
 ## Contributing
 
