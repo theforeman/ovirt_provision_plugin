@@ -34,7 +34,7 @@ Then run `bundle install` and from the same directory.
 
 | Foreman | Plugin |
 | ---------------:| --------------:|
-| >= 1.6         | 1.0.0 - 1.0.1 |
+| >= 1.6         | 1.0.2 |
 
 ## Contributing
 
