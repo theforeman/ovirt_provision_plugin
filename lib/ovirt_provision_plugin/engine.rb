@@ -10,7 +10,9 @@ module OvirtProvisionPlugin
 
     # Add any db migrations
     initializer "ovirt_provision_plugin.load_app_instance_data" do |app|
-      app.config.paths['db/migrate'] += OvirtProvisionPlugin::Engine.paths['db/migrate'].existent
+      OvirtProvisionPlugin::Engine.paths['db/migrate'].existent.each do |path|
+        app.config.paths['db/migrate'] << path
+      end
     end
 
     initializer 'ovirt_provision_plugin.register_plugin', :after=> :finisher_hook do |app|
