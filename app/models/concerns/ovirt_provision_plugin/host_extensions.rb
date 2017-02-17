@@ -63,7 +63,7 @@ module OvirtProvisionPlugin
         connection_opts = {}
         if not cr.public_key.blank?
           connection_opts[:datacenter_id] = cr.uuid
-          connection_opts[:ca_cert_store] = OpenSSL::X509::Store.new.add_cert(OpenSSL::X509::Certificate.new(cr.public_key))
+          connection_opts[:ca_cert] = cr.public_key
         end
         return OVIRT::Client.new("#{cr.user}", "#{cr.password}", "#{cr.url}", connection_opts)
       rescue OVIRT::OvirtException
