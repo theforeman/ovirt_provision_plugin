@@ -1,3 +1,5 @@
+require 'ovirtsdk4'
+
 module OvirtProvisionPlugin
   module HostExtensions
     extend ActiveSupport::Concern
@@ -8,6 +10,7 @@ module OvirtProvisionPlugin
       if self.is_ovirt_node?
         logger.info "OvirtProvisionPlugin:: Node provisioning is done."
       else
+        client = nil
         while max_tries > 0 && self.ovirt_host? && self.status_installing?
           if (self.error?)
             logger.warn "OvirtProvisionPlugin:: Failed to run classes. Trying again (#{max_tries})"
@@ -18,12 +21,21 @@ module OvirtProvisionPlugin
               logger.info "OvirtProvisionPlugin:: Running ovirt_host_callback on \"#{self.get_ovirt_host_name}\""
               host_id = self.get_ovirt_host_id
               client = self.get_ovirt_client
-              client.reinstall_host("#{host_id}")
+              client.system_service.hosts_service.host_service(host_id).install(
+                ssh: {
+                  authentication_method: OvirtSDK4::SshAuthenticationMethod::PUBLICKEY
+                },
+                host: {
+                  override_iptables: false
+                }
+              )
               logger.info "OvirtProvisionPlugin:: Sent reinstall command successfully"
-            rescue OVIRT::OvirtException
+            rescue OvirtSDK4::Error
               logger.warn "OvirtProvisionPlugin:: Failed to reinstall host. Trying again (#{max_tries})"
               puppetrun!
               max_tries = max_tries - 1
+            ensure
+              client.close if client
             end
           end
         end
@@ -60,15 +72,17 @@ module OvirtProvisionPlugin
       begin
         cr_id = parameters.find_by_name("compute_resource_id").value
         cr = ComputeResource.find_by_id(cr_id)
-        connection_opts = {}
-        if not cr.public_key.blank?
-          connection_opts[:datacenter_id] = cr.uuid
-          connection_opts[:ca_cert_store] = OpenSSL::X509::Store.new.add_cert(OpenSSL::X509::Certificate.new(cr.public_key))
+        connection_opts = {
+          :url      => cr.url,
+          :username => cr.username,
+          :password => cr.password,
+        }
+        if cr.public_key.blank?
+          connection_opts[:insecure] = true
+        else
+          connection_opts[:ca_certs] = [cr.public_key]
         end
-        return OVIRT::Client.new("#{cr.user}", "#{cr.password}", "#{cr.url}", connection_opts)
-      rescue OVIRT::OvirtException
-        logger.error "OvirtProvisionPlugin:: compute resource id was not found"
-        return false
+        OvirtSDK4::Connection.new(connection_opts)
       rescue NoMethodError
         logger.error "OvirtProvisionPlugin:: fail to read compute_rescource_id on host #{self.name}, id #{cr_id}"
         return false
@@ -84,7 +98,7 @@ module OvirtProvisionPlugin
         logger.error "OvirtProvisionPlugin:: couldn't get ovirt_host"
         return ""
       else
-        return client.host(get_ovirt_host_id)
+        connection.system_service.hosts_service.host_service(get_ovirt_host_id).get
       end
     end
 
@@ -100,9 +114,6 @@ module OvirtProvisionPlugin
     def get_ovirt_host_id
       begin
         return self.parameters.find_by_name("host_ovirt_id").value
-      rescue OVIRT::OvirtException
-        logger.error "OvirtProvisionPlugin:: host ovirt id was not found"
-        return false
       rescue NoMethodError
         logger.error "OvirtProvisionPlugin:: fail to read host_ovirt_id on host #{self.name}"
         return false
