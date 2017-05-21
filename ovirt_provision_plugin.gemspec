@@ -13,5 +13,5 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*"] + ["LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
 
-  s.add_dependency "ovirt-engine-sdk", ">= 4.1.3"
+  s.add_dependency "rbovirt", ">= 0.0.27"
 end
