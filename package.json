@@ -1,0 +1,9 @@
+{
+  "name": "ovirt_provision_plugin",
+  "version": "3.0.0",
+  "license": "GPL-3.0",
+  "description": "Ovirt provision plugin sends API request to oVirt management to reinstall host id after discovered hosts are first provisioned by oVirt engine (Using foreman provider integration).",
+  "repository" : {
+    "private": false
+  }
+}
