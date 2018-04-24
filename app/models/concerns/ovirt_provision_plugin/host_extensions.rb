@@ -12,7 +12,7 @@ module OvirtProvisionPlugin
       else
         client = nil
         while max_tries > 0 && self.ovirt_host? && self.status_installing?
-          if (self.error?)
+          if (not self.errors.empty?)
             logger.warn "OvirtProvisionPlugin:: Failed to run classes. Trying again (#{max_tries})"
             puppetrun!
             max_tries = max_tries - 1
@@ -24,9 +24,6 @@ module OvirtProvisionPlugin
               client.system_service.hosts_service.host_service(host_id).install(
                 ssh: {
                   authentication_method: OvirtSDK4::SshAuthenticationMethod::PUBLICKEY
-                },
-                host: {
-                  override_iptables: false
                 }
               )
               logger.info "OvirtProvisionPlugin:: Sent reinstall command successfully"

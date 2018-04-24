@@ -3,7 +3,6 @@ require File.expand_path('../lib/ovirt_provision_plugin/version', __FILE__)
 Gem::Specification.new do |s|
   s.name        = "ovirt_provision_plugin"
   s.version     = OvirtProvisionPlugin::VERSION
-  s.date        = Date.today.to_s
   s.authors     = ["Yaniv Bronhaim"]
   s.email       = ["ybronhei@redhat.com"]
   s.homepage    = "https://github.com/theforeman/ovirt_provision_plugin"
