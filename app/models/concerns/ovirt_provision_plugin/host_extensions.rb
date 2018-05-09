@@ -9,7 +9,7 @@ module OvirtProvisionPlugin
         logger.info "OvirtProvisionPlugin:: Node provisioning is done."
       else
         while max_tries > 0 && self.ovirt_host? && self.status_installing?
-          if (self.error?)
+          if (not self.errors.empty?)
             logger.warn "OvirtProvisionPlugin:: Failed to run classes. Trying again (#{max_tries})"
             puppetrun!
             max_tries = max_tries - 1
@@ -18,7 +18,7 @@ module OvirtProvisionPlugin
               logger.info "OvirtProvisionPlugin:: Running ovirt_host_callback on \"#{self.get_ovirt_host_name}\""
               host_id = self.get_ovirt_host_id
               client = self.get_ovirt_client
-              client.reinstall_host("#{host_id}")
+              client.reinstall_host("#{host_id}", true)
               logger.info "OvirtProvisionPlugin:: Sent reinstall command successfully"
             rescue OVIRT::OvirtException
               logger.warn "OvirtProvisionPlugin:: Failed to reinstall host. Trying again (#{max_tries})"
