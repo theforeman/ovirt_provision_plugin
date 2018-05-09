@@ -1,7 +1,10 @@
 # ovirt_provision_plugin
 
-Ovirt provision plugin sends API request to oVirt management to reinstall host id after discovered hosts are first provisioned
-by oVirt engine (Using foreman provider integration).
+Ovirt provision plugin is responsible to finalize the host installation process started by oVirt engine.
+The plugin is being used after the provision of the discovered host was completed successfully, by sending a
+request via oVirt-engine Restful API to install the host that was just provisoined.
+
+The entire Foreman provider integration is described [here](https://ovirt.org/develop/release-management/features/infra/foremanintegration/)
 
 # How does it work
 
