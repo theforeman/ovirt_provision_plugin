@@ -1,5 +1,3 @@
-require 'deface'
-
 module OvirtProvisionPlugin
   class Engine < ::Rails::Engine
 
