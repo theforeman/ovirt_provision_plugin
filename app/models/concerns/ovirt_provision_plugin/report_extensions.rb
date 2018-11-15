@@ -7,10 +7,7 @@ module OvirtProvisionPlugin
     end
 
     def new_report_callback
-      if host.reports.count == 2
-        host.ovirt_host_callback
-      end
+      host.ovirt_host_callback if host.reports.count == 2
     end
-
   end
 end
