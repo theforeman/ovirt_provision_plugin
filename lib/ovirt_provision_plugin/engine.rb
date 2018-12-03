@@ -1,50 +1,29 @@
-require 'deface'
-
 module OvirtProvisionPlugin
   class Engine < ::Rails::Engine
+    engine_name "ovirt_provision_plugin"
 
-    config.autoload_paths += Dir["#{config.root}/app/controllers/concerns"]
-    config.autoload_paths += Dir["#{config.root}/app/helpers/concerns"]
     config.autoload_paths += Dir["#{config.root}/app/models/concerns"]
-    config.autoload_paths += Dir["#{config.root}/app/overrides"]
 
-    # Add any db migrations
-    initializer "ovirt_provision_plugin.load_app_instance_data" do |app|
-      OvirtProvisionPlugin::Engine.paths['db/migrate'].existent.each do |path|
-        app.config.paths['db/migrate'] << path
-      end
-    end
-
-    initializer 'ovirt_provision_plugin.register_plugin', :after=> :finisher_hook do |app|
+    initializer 'ovirt_provision_plugin.register_plugin', :before => :finisher_hook do |_app|
       Foreman::Plugin.register :ovirt_provision_plugin do
-        requires_foreman '>= 1.4'
-
-        # Add permissions
-        security_block :ovirt_provision_plugin do
-          permission :view_ovirt_provision_plugin, {:'ovirt_provision_plugin/hosts' => [:ovirt_hosts] }
-        end
-
-        # Add a new role called 'Discovery' if it doesn't exist
-        role "OvirtProvisionPlugin", [:view_ovirt_provision_plugin]
+        requires_foreman ">= 1.4"
       end
     end
 
-    #Include concerns in this config.to_prepare block
+    # Include concerns in this config.to_prepare block
     config.to_prepare do
       begin
         Host::Managed.send(:include, OvirtProvisionPlugin::HostExtensions)
         Report.send(:include, OvirtProvisionPlugin::ReportExtensions)
-        HostsHelper.send(:include, OvirtProvisionPlugin::HostsHelperExtensions)
-      rescue => e
-        puts "OvirtProvisionPlugin: skipping engine hook (#{e.to_s})"
+      rescue StandardError => e
+        Rails.logger.warn "OvirtProvisionPlugin: skipping engine hook (#{e})"
       end
     end
 
-    rake_tasks do
-      Rake::Task['db:seed'].enhance do
-        OvirtProvisionPlugin::Engine.load_seed
-      end
+    initializer "ovirt_provision_plugin.register_gettext", after: :load_config_initializers do
+      locale_dir = File.join(File.expand_path("../..", __dir__), "locale")
+      locale_domain = "ovirt_provision_plugin"
+      Foreman::Gettext::Support.add_text_domain locale_domain, locale_dir
     end
-
   end
 end
