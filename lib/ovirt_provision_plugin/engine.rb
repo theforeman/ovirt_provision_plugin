@@ -19,11 +19,5 @@ module OvirtProvisionPlugin
         Rails.logger.warn "OvirtProvisionPlugin: skipping engine hook (#{e})"
       end
     end
-
-    initializer "ovirt_provision_plugin.register_gettext", after: :load_config_initializers do
-      locale_dir = File.join(File.expand_path("../..", __dir__), "locale")
-      locale_domain = "ovirt_provision_plugin"
-      Foreman::Gettext::Support.add_text_domain locale_domain, locale_dir
-    end
   end
 end

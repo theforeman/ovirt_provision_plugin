@@ -1,8 +1,0 @@
-[main]
-host = https://www.transifex.com
-
-[foreman.ovirt_provision_plugin]
-file_filter = locale/<lang>/ovirt_provision_plugin.edit.po
-source_file = locale/ovirt_provision_plugin.pot
-source_lang = en
-type = PO

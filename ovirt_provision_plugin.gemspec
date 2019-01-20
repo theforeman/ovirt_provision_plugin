@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.summary     = "This plugin monitors oVirt provision for new host and perform related API calls to ovirt-engine."
   s.description = "Ovirt provision plugin sends API request to oVirt management to reinstall host id after discovered hosts are first provisioned by oVirt engine (Using foreman provider integration)."
 
-  s.files      = Dir["{app,config,db,lib,locale}/**/*"] + ["LICENSE", "Rakefile", "README.md"]
+  s.files      = Dir["{app,config,db,lib}/**/*"] + ["LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
 
   s.add_development_dependency "factory_bot_rails", "~> 4.5"
