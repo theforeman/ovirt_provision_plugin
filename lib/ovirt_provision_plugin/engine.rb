@@ -25,7 +25,8 @@ module OvirtProvisionPlugin
         end
 
         # Add a new role called 'Discovery' if it doesn't exist
-        role "OvirtProvisionPlugin", [:view_ovirt_provision_plugin]
+        role "OvirtProvisionPlugin", [:view_ovirt_provision_plugin],
+             "TODO: Description"
       end
     end
 
